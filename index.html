@@ -51,19 +51,29 @@
 		transform: translate(-50%, -50%);
 	}
 
-	  #channels > button > img {
+	#channels {
+		width: 800px;
+		margin: 0 auto;
+		padding: 0px;
+	}
+
+	#channels > button {
+		padding: 2px;
+
+	}
+
+	#channels > button > img {
 		max-height: 64px;
 		pointer-events:none;
 
+	}
 
-	  }
-	  
-	  google-cast-launcher {
+	google-cast-launcher {
 	    display: inline-block;
 		vertical-align: middle;
 		width: 32px;
 		height: 32px;
-	  }
+	}
 
     </style>
   </head>
@@ -83,6 +93,17 @@
 		<google-cast-launcher></google-cast-launcher>
       </div>
       <div id="channels">
+
+		<button id="ten" data-src="https://dofiuo7zvzwu7.cloudfront.net/10NSW/stream.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/10%20hd.svg"/>
+		</button>
+		<button id="ten-peach" data-src="https://dwd941bx75no0.cloudfront.net/10PeachNSW/stream.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/10%20peach.svg"/>
+		</button>
+		<button id="ten-bold" data-src="https://d3dilkfpueg8q1.cloudfront.net/10BoldNSW/stream.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/10%20bold.svg"/>
+		</button>
+
 		<button id="nine-hd" data-src="https://9now-livestreams.akamaized.net/hls/live/2007330/ch9-syd/master.m3u8">
 			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/9hd%20sydney.svg"/>
 		</button>
@@ -110,6 +131,29 @@
 		<button id="seven-flix" data-src="https://npc.cdn.7livecloud.io/hls/live/SYD6/masterSD.m3u8">
 			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/7flix%20sydney.svg"/>
 		</button>
+
+		<button id="sbs-one" data-src="https://sbs-live.akamaized.net/hls/live/2002827/channel1/geo/master_2500K.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/sbs%20one%20nsw.svg"/>
+		</button>
+		<button id="sbs-one" data-src="https://sbs-live.akamaized.net/hls/live/2002828/channel2/geo/master_2500K.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/sbs%20viceland.svg"/>
+		</button>
+		<button id="sbs-worldmovies" data-src="https://sbs-live.akamaized.net/hls/live/2005470/channel5/geo/master_2500K.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/sbs%20world%20movies.svg"/>
+		</button>
+		
+		<button id="abc" data-src="https://abc-iview-mediapackagestreams-1.akamaized.net/out/v1/4f16fd0d74ca4bfd93ed043330b0c010/index.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/abc%20hd.svg"/>
+		</button>		
+		
+		<button id="abc-news" data-src="https://abc-iview-mediapackagestreams-1.akamaized.net/out/v1/50345bf35f664739912f0b255c172ae9/index_1.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/abc%20news.svg"/>
+		</button>
+		
+		<button id="abc-kids" data-src="https://abc-iview-mediapackagestreams-2.akamaized.net/out/v1/3c7653c38e0e40fbbbaeaefb02ae6fd1/index.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/abccomedy-kids.svg"/>
+		</button>
+		
       </div>
 	</main>
     <footer>
@@ -130,7 +174,7 @@
 			} )
 		}
 	}
-	
+
 	</script>
 	<script type="text/javascript" src="https://gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 	<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -143,6 +187,7 @@
 		const elMuteVideo       = document.querySelector( '#mute-ads' )
 		const elBlurAds         = document.querySelector( '#blur-ads' )
 		const elVideo           = document.querySelector( '#main-video' )
+		const elMsg             = document.querySelector( '.msg' )
 		const elChannels        = document.querySelector( '#channels' )
 
 		let isAd          = false
@@ -198,6 +243,8 @@
 
 				if ( elBlurAds.checked ) elVideo.classList.add( 'blur' )
 
+				
+
 			}
 
 			else {
@@ -212,6 +259,8 @@
 
 				elVideo.classList.remove( 'desaturate' )
 				elVideo.classList.remove( 'blur' )
+				
+				elMsg.style.display = 'none'
 
 			}
 
