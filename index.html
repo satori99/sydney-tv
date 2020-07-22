@@ -108,6 +108,19 @@
 		<p>All the TV stream source URLs were sourced from <a target="_blank" href="https://docs.google.com/spreadsheets/d/1B-1NFj-xO1s6zeiZVCwfrChnu8ANjcfAVMLOU2JmZMY/edit#gid=0">Australian TV Channel Direct Links</a> </p>
 		<p>* Chrome only</p>
 	</footer>
+	<script>
+
+	window[ '__onGCastApiAvailable' ] = function( isAvailable ) {
+		if ( isAvailable ) {
+			console.log( 'Cast API is available!' )
+			cast.framework.CastContext.getInstance().setOptions( {
+				receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+				autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+			} )
+		}
+	}
+	
+	</script>
 	<script type="text/javascript" src="https://gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 	<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 	<script>
