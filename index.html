@@ -3,12 +3,58 @@
     <meta charset="utf-8">
     <title>Sydney Free-to-Air Live TV Streams</title>
     <style type="text/css">
-    
+
+	body {
+		text-align: center;
+	}
+
+	#video-container {
+		position: relative;
+		width: 800px;
+		height: 450px;
+		padding: 0;
+		margin: 0 auto;
+		color: #808080;
+		background-color: #404040;
+		font-family: monospace;
+		text-align: left;
+		user-select: none;
+		overflow: hidden;
+	}
+
+	#video-container > video {
+		display: block;
+		padding: 0;
+		margin: 0;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	#video-container > video.blur {
+
+		-webkit-filter: saturate(0.25) blur(25px);
+		   -moz-filter: saturate(0.25) blur(25px);
+			 -o-filter: saturate(0.25) blur(25px);
+			-ms-filter: saturate(0.25) blur(25px);
+				filter: saturate(0.25) blur(25px);
+	}
+
       #main-video {
-        width: 80%;
+	    text-align: center;
+        width: 800px;
         background: black;
       }
-      
+
+	  #channels > button > img {
+		max-height: 64px;
+		pointer-events:none;
+
+
+	  }
+
     </style>
   </head>
   <body>
@@ -16,14 +62,169 @@
       <h1>Sydney Free-to-Air Live TV Streams</h1>
     </header>
     <main>
+		<div id="video-container">
+			<video id="main-video">
+		</div>
       <div>
-        <input type="checkbox">Mute Ads</input>
+        <input id="mute-video" type="checkbox">Mute Ads</input>
+        <input id="blur-ads" type="checkbox">Blur Ads</input>
+        <input id="show-time" type="checkbox">Show remaing ad time</input>
+		<google-cast-launcher></google-cast-launcher>
       </div>
-      <div>
-        <video id="main-video" />
+      <div id="channels">
+		<button id="nine-hd" data-src="https://9now-livestreams.akamaized.net/hls/live/2007330/ch9-syd/master.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/9hd%20sydney.svg"/>
+		</button>
+		<button id="nine-gem" data-src="https://9now-livestreams.akamaized.net/hls/live/2008311/gem-syd/master.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/9gemhd%20sydney.svg"/>
+		</button>
+		<button id="nine-go" data-src="https://9now-livestreams.akamaized.net/hls/live/2008312/go-syd/master.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/9go!%20sydney.svg"/>
+		</button>
+		<button id="nine-life" data-src="https://9now-livestreams.akamaized.net/hls/live/2008313/life-syd/master.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/9life%20sydney.svg"/>
+		</button>
+		<button id="nine-rush" data-src="https://9now-livestreams.akamaized.net/hls/live/2010626/rush-syd/master.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/9rush%20sydney.svg"/>
+		</button>
+		<button id="seven" data-src="https://npc.cdn.7livecloud.io/hls/live/SYD1/masterSD.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/7%20sydney.svg"/>
+		</button>
+		<button id="seven-two" data-src="https://npc.cdn.7livecloud.io/hls/live/SYD2/masterSD.m3u8">
+			<img src="https://raw.githubusercontent.com/mathewcallaghan/australian-tv-network-logo-icons/master/svg/7two%20sydney.svg"/>
+		</button>
       </div>
-    </main>
+	</main>
     <footer>
-    </footer>
+		<p>This is just a static HTML page. It is not proxying or modifying video stream data in any way.</p>
+		<p>This page uses <a target="_blank" href="https://github.com/video-dev/hls.js">hls.js</a> to read adaptive HTTP Live Streams,
+		and <a href="https://developers.google.com/cast/docs/chrome_sender/integrate">cast_sender.js</a> to interact with Chromecasts*</p>
+		<p>All the TV stream source URLs were sourced from <a target="_blank" href="https://docs.google.com/spreadsheets/d/1B-1NFj-xO1s6zeiZVCwfrChnu8ANjcfAVMLOU2JmZMY/edit#gid=0">Australian TV Channel Direct Links</a> </p>
+		<p>* Chrome only</p>
+	</footer>
+	<script type="text/javascript" src="https://gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+	<script>
+
+	if ( Hls.isSupported() ) {
+
+		console.log( 'HLS is supported' )
+
+		const elMuteVideo       = document.querySelector( '#mute-video' )
+		const elBlurAds         = document.querySelector( '#blur-ads' )
+		const elVideo           = document.querySelector( '#main-video' )
+		const elChannels        = document.querySelector( '#channels' )
+
+		let isAd          = false
+		let adElapsedTime = 0
+		let adDuration    = 0
+
+		const hls = new Hls( {
+			liveDurationInfinity: true,
+			liveBackBufferLength: 120,
+			enableWorker: true,
+		} )
+
+		hls.on( Hls.Events.MANIFEST_PARSED, () => elVideo.play() )
+
+		hls.on( Hls.Events.FRAG_CHANGED, ( name, data ) => {
+
+			const tagList = Object.fromEntries( data.frag.tagList )
+
+			if ( 'EXT-X-CUE-OUT' in tagList ) {
+
+				const duration = parseFloat( tagList[ 'EXT-X-CUE-OUT' ] )
+
+				isAd = true
+				adElapsedTime = 0
+				adDuration = duration
+
+				console.log( 'AD! %d/%d mute: %s', 0, duration, elMuteVideo.checked )
+
+				elVideo.muted = elMuteVideo.checked
+
+				if ( elBlurAds.checked ) elVideo.classList.add( 'blur' )
+
+			} else if ( 'EXT-X-CUE-OUT-CONT' in tagList ) {
+
+				const { ElapsedTime, Duration } = Object.fromEntries(
+					tagList[ 'EXT-X-CUE-OUT-CONT' ].split( ',' ).map( v => v.split( /(?<=^[^=]+)=/ ) ).map( ( [ n, v ] ) => {
+							switch ( n ) {
+								case 'ElapsedTime':
+								case 'Duration':
+									return [ n, parseFloat( v ) ]
+								default:
+									return [ n, v ]
+							}
+						} ) )
+
+				isAd = true
+				adElapsedTime = ElapsedTime
+				adDuration = Duration
+
+				console.log( 'AD! %d/%d mute: %s', ElapsedTime, Duration, elMuteVideo.checked )
+
+				elVideo.muted = elMuteVideo.checked
+
+				if ( elBlurAds.checked ) elVideo.classList.add( 'blur' )
+
+			}
+
+			else {
+
+				isAd = false
+				adElapsedTime = 0
+				adDuration = 0
+
+				elVideo.muted = false
+
+				console.log( 'not ad!', tagList )
+
+				elVideo.classList.remove( 'desaturate' )
+				elVideo.classList.remove( 'blur' )
+
+			}
+
+		} )
+
+		elMuteVideo.onchange = e => elVideo.muted = isAd && e.target.checked
+
+		elBlurAds.onchange = e => {
+
+			if ( isAd && e.target.checked ) {
+
+				elVideo.classList.add( 'blur' )
+
+			} else {
+
+				elVideo.classList.remove( 'blur' )
+
+			}
+		}
+
+		elChannels.onclick = function onSelectChannel ( e ) {
+
+			hls.loadSource( e.target.dataset.src )
+
+			hls.attachMedia( elVideo )
+
+			isAd = false
+			adElapsedTime = 0
+			adDuration = 0
+
+			elVideo.muted = false
+			elVideo.classList.remove( 'blur' )
+
+			console.log( 'selected channel:', e.target.id, e.target.dataset.src )
+
+		}
+
+	} else {
+
+		alert( 'Sorry, your browser does not support the HTML5 Media Source Extensions API.' )
+
+	}
+
+	</script>
   </body>
 </html>
