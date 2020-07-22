@@ -16,7 +16,7 @@
 		margin: 0 auto;
 		color: #808080;
 		background-color: #404040;
-		font-family: monospace;
+		font-family: arial;
 		text-align: left;
 		user-select: none;
 		overflow: hidden;
@@ -42,11 +42,14 @@
 				filter: saturate(0.25) blur(25px);
 	}
 
-      #main-video {
-	    text-align: center;
-        width: 800px;
-        background: black;
-      }
+	#video-container > .msg {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin: 0;
+		padding: 0;
+		transform: translate(-50%, -50%);
+	}
 
 	  #channels > button > img {
 		max-height: 64px;
@@ -56,8 +59,9 @@
 	  }
 	  
 	  google-cast-launcher {
-	    display: block;
-		max-height: 64px;
+	    display: inline-block;
+		width: 64px;
+		height: 64px;
 	  }
 
     </style>
@@ -68,7 +72,8 @@
     </header>
     <main>
 		<div id="video-container">
-			<video id="main-video">
+			<video id="main-video"></video>
+			<span class="msg">Select a Channel</span>
 		</div>
       <div>
         <input id="mute-ads" type="checkbox" checked/><label for="mute-ads">Mute Ads</label>
