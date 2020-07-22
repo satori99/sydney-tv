@@ -66,9 +66,9 @@
 			<video id="main-video">
 		</div>
       <div>
-        <input id="mute-video" type="checkbox">Mute Ads</input>
-        <input id="blur-ads" type="checkbox">Blur Ads</input>
-        <input id="show-time" type="checkbox">Show remaing ad time</input>
+        <input id="mute-ads" type="checkbox" checked/><label for="mute-ads">Mute Ads</label>
+        <input id="blur-ads" type="checkbox" checked/><label for="blur-ads">Blur Ads</label>
+        <input id="show-time" type="checkbox" checked/><label for="show-time">Show remaing ad time</label>
 		<google-cast-launcher></google-cast-launcher>
       </div>
       <div id="channels">
@@ -116,7 +116,7 @@
 
 		console.log( 'HLS is supported' )
 
-		const elMuteVideo       = document.querySelector( '#mute-video' )
+		const elMuteVideo       = document.querySelector( '#mute-ads' )
 		const elBlurAds         = document.querySelector( '#blur-ads' )
 		const elVideo           = document.querySelector( '#main-video' )
 		const elChannels        = document.querySelector( '#channels' )
